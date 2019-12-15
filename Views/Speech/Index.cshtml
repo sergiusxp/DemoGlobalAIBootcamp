@@ -1,0 +1,47 @@
+﻿@using System.IO;
+@using CognitiveServicesDemo.Helpers;
+@{
+    ViewData["Title"] = "Speech";
+}
+<h1>@ViewData["Title"]</h1>
+<form method="post" asp-controller="Speech" asp-action="TextToSpeech">
+    @model SpeechViewModel
+    @if (Model != null)
+    {
+        <div class="alert alert-@Model.Status" role="alert">
+            @Html.Raw(Model.Result)
+        </div>
+    }
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Write a text here</label>
+        <textarea class="form-control" id="Text" name="Text" rows="5">@if (Model != null) { @Html.Raw(Model.Text) }</textarea>
+    </div>
+    <div class="form-group">
+        @Html.DropDownList("Language", (IEnumerable<SelectListItem>)ViewData["Languages"])
+    </div>
+    <div>
+        <input type="submit" value="Text to speech" class="btn btn-info" />
+    </div>
+</form>
+@*<form method="post" asp-controller="Speech" asp-action="Translate">
+    @if (Model != null)
+    {
+        <div class="alert alert-success" role="alert">
+            
+        </div>
+    }
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Translate something</label>
+        <textarea class="form-control" id="TextToTranslate" name="TextToTranslate" rows="5">@if (Model != null) { @Html.Raw(Model.Text) }</textarea>
+    </div>
+    <div class="form-group">
+        @Html.DropDownList("LanguageFrom", (IEnumerable<SelectListItem>)ViewData["Languages"], "Source language...")
+        @Html.DropDownList("LanguageTo", (IEnumerable<SelectListItem>)ViewData["Languages"], "Destination language...")
+    </div>
+    <div class="form-group">
+        
+    </div>
+    <div>
+        <input type="submit" value="Text to speech" class="btn btn-info" />
+    </div>
+</form>*@

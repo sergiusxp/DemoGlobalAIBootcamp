@@ -1,0 +1,33 @@
+﻿.imgSquare {
+    width: 220px;
+    height: 220px;
+    border: 2px solid #dedede;
+}
+
+.imgContainer > div {
+    display: inline-block;
+    vertical-align: top;
+    width: 325px;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 3px;
+    background: #e6e6e6;
+    border: 2px solid #dedede;
+}
+
+.centered {
+    text-align: center
+}
+
+.imageSquare > div:not(:first-child) {
+    margin-top: 20px;
+}
+
+.centered > form {
+    display: inline-block;
+}
+
+.spin {
+    width: 20px !important;
+    height: 20px !important;
+}

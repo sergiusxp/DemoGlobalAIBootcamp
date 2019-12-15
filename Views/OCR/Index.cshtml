@@ -1,0 +1,100 @@
+﻿@using System.IO;
+@using CognitiveServicesDemo.Helpers;
+@{
+    ViewData["Title"] = "OCR";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form method="post" enctype="multipart/form-data" asp-controller="OCR" asp-action="FileUpload">
+    <div class="form-group">
+        <div class="col-md-10">
+            <p>Upload one or more files using this form:</p>
+            <input type="file" name="files" multiple />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            <input type="submit" value="Upload" />
+        </div>
+    </div>
+</form>
+@{
+    var images = Directory
+        .GetFiles("wwwroot\\OCR", "*.*", SearchOption.AllDirectories)
+        .Select(f => System.IO.Path.GetFileName(f))
+        .ToImageList();
+
+    if (images != null)
+    {
+        var id = 0;
+        <div class="imgContainer">
+            @foreach (var img in images)
+            {
+                <div class="imageSquare">
+                    <div class="centered">
+                        <img class="imgSquare" src="@Url.Content(String.Format("~/OCR/{0}", img.ImageName.ToString()))" />
+                    </div>
+                    <div class="centered">
+                        <button type="button" class="btn btn-info" id="btnGetData" onclick="$.openModal('@img.ImageName', @id);">
+                            Process text <div class="spinner-border spin" id="spin-@id" role="status"><span class="sr-only">Loading...</span></div>
+                        </button>
+                        <form asp-controller="OCR" asp-action="DeleteImage">
+                            <input type="hidden" name="ImageName" value="@img.ImageName" />
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                    @model ImageViewModel
+                    @{
+                        if (Model != null && Model.ImageName == img.ImageName)
+                        {
+                            @Model.Result
+                        }
+                    }
+                </div>
+                id++;
+            }
+        </div>
+    }
+}
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cognitive Services Info</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="partialViewContent">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('.spin').hide();
+        $.openModal = function (path, id) {
+            $('#spin-' + id).show();
+            var requestUrl = '@Url.Action("GetSomeData", "OCR")?path=' + path;
+            $.get(requestUrl)
+                .done(function (responsedata) {
+                    console.log("success");
+                    $("#partialViewContent").html(responsedata);
+                    $('#myModal').modal('show');
+                })
+                .fail(function (err) {
+                    alert("Error");
+                })
+                .always(function () {
+                    console.log("finished");
+                    $('#spin-' + id).hide();
+                });
+        };
+    });
+</script>
